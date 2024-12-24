@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import './globals.css'
+
+import { Header } from '@/components/layout'
 
 export const metadata: Metadata = {
   title: '2024청신호 관리',
@@ -30,15 +32,16 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
       <link rel="apple-touch-icon" href="/image/192.png" />
       <link rel="apple-touch-icon" href="/image/512.png" />
-      <body>
+      <body className="min-h-screen w-full p-4">
+        <Header />
         {children}
       </body>
     </html>
-  );
+  )
 }
