@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-import { Header } from '@/components/layout'
+import { Header, Sidebar } from '@/components/layout'
 
 export const metadata: Metadata = {
   title: '2024청신호 관리',
@@ -38,9 +38,13 @@ export default function RootLayout({
     <html lang="en">
       <link rel="apple-touch-icon" href="/image/192.png" />
       <link rel="apple-touch-icon" href="/image/512.png" />
-      <body className="min-h-screen w-full p-4">
+      <body className="flex min-h-screen w-full flex-col gap-y-2 p-4">
         <Header />
-        {children}
+        {/* Sidebar */}
+        <div className="flex flex-grow gap-x-2">
+          <Sidebar />
+          <div className="bg-gl-green-opacity-40 flex-grow rounded-2xl p-3">{children}</div>
+        </div>
       </body>
     </html>
   )
