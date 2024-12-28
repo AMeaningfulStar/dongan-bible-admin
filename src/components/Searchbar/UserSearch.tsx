@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 
 import Modal from '@components/Modal'
 
+import useSearchData from '@/libs/stores/SearchData'
 import { createUsers, readExcel } from '@/utils'
 
 type CreateUserType = {
@@ -18,9 +19,11 @@ type CreateUserType = {
 
 export function UserSearch() {
   const [isModalShow, setIsModalShow] = useState<boolean>(false)
+  const [userName, setUserName] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
   const [userData, setUserData] = useState<CreateUserType[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
+  const { setSearchData, initSearchData } = useSearchData()
 
   const handleClick = () => {
     inputRef.current?.click()
@@ -33,7 +36,7 @@ export function UserSearch() {
       if (files) {
         setFile(files[0])
         const excelData = await readExcel(files[0])
-        
+
         setUserData(excelData)
       }
     } catch (error) {
@@ -41,13 +44,43 @@ export function UserSearch() {
     }
   }
 
+  const handleSearch = async () => {
+    if (!userName) return
+
+    try {
+      const response = await fetch(`/api/users/name/${userName}`)
+      const userList = await response.json()
+
+      setSearchData(userList.data)
+    } catch (error) {
+      console.error('검색 중 오류 발생:', error)
+    }
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
+  const handleInit = () => {
+    setUserName('')
+    initSearchData()
+  }
+
   return (
     <div className="flex w-full gap-x-4 rounded-lg bg-white p-4">
       <input
         className="flex-grow rounded border border-gl-grayscale-100 py-3 pl-2 outline-none"
         placeholder="'사용자 이름'으로 검색하기"
+        value={userName}
+        onChange={(event) => setUserName(event.target.value)}
+        onKeyDown={handleKeyDown}
       />
-      <button className="bg-gl-grayscale-200 text-button-18-m hover:bg-gl-grayscale-300 rounded px-4 py-2 text-white">
+      <button
+        className="bg-gl-grayscale-200 text-button-18-m hover:bg-gl-grayscale-300 rounded px-4 py-2 text-white"
+        onClick={handleSearch}
+      >
         검색
       </button>
       <button
@@ -55,6 +88,12 @@ export function UserSearch() {
         onClick={() => setIsModalShow(true)}
       >
         등록
+      </button>
+      <button
+        className="bg-gl-grayscale-200 text-button-18-m hover:bg-gl-grayscale-300 rounded px-4 py-2 text-white"
+        onClick={handleInit}
+      >
+        새로고침
       </button>
       {isModalShow && (
         <Modal title="사용자 등록" setIsModalShow={setIsModalShow}>
