@@ -1,6 +1,6 @@
 'use client'
 
-import { Users } from '@/components/List'
+import { ErrorList, Users } from '@/components/List'
 import { UserSearch } from '@/components/Searchbar'
 
 import useSearchData from '@/libs/stores/SearchData'
@@ -20,7 +20,7 @@ export default function Users_Manage() {
   }
 
   if (isError) {
-    return <div>...isError</div>
+    return <ErrorList />
   }
 
   return (
