@@ -1,6 +1,6 @@
 'use client'
 
-import { ErrorList, Users } from '@/components/List'
+import { ErrorList, LoadingList, Users } from '@/components/List'
 import { UserSearch } from '@/components/Searchbar'
 
 import useSearchData from '@/libs/stores/SearchData'
@@ -15,18 +15,22 @@ export default function Users_Manage() {
     initSearchData()
   }, [])
 
-  if (isLoading) {
-    return <div>...Loading</div>
-  }
+  const ListView = () => {
+    if (isLoading) {
+      return <LoadingList />
+    }
 
-  if (isError) {
-    return <ErrorList />
+    if (isError) {
+      return <ErrorList />
+    }
+
+    return <Users userList={searchData ? searchData : userList?.data || []} />
   }
 
   return (
     <div className="flex h-full flex-col gap-y-2">
       <UserSearch />
-      <Users userList={searchData ? searchData : userList?.data || []} />
+      <ListView />
     </div>
   )
 }
